@@ -1,0 +1,59 @@
+** start of main.py **
+
+def add_time(start, duration, starting_day=None):
+    # List of days for reference
+    days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    
+    # Parse start time
+    time, meridiem = start.split()
+    start_hours, start_minutes = map(int, time.split(':'))
+    
+    # Convert start time to 24-hour format
+    if meridiem.upper() == 'PM' and start_hours != 12:
+        start_hours += 12
+    if meridiem.upper() == 'AM' and start_hours == 12:
+        start_hours = 0
+    
+    # Parse duration
+    duration_hours, duration_minutes = map(int, duration.split(':'))
+    
+    # Add duration to start time
+    total_minutes = start_minutes + duration_minutes
+    total_hours = start_hours + duration_hours + (total_minutes // 60)
+    total_minutes = total_minutes % 60
+    
+    # Calculate number of days later
+    days_later = total_hours // 24
+    total_hours = total_hours % 24
+    
+    # Convert back to 12-hour format
+    if total_hours >= 12:
+        meridiem_result = 'PM'
+    else:
+        meridiem_result = 'AM'
+    display_hours = total_hours % 12
+    if display_hours == 0:
+        display_hours = 12
+    
+    # Determine the day of the week if provided
+    day_str = ''
+    if starting_day:
+        starting_day_lower = starting_day.lower()
+        start_day_index = days_of_week.index(starting_day_lower)
+        new_day_index = (start_day_index + days_later) % 7
+        day_str = ', ' + days_of_week[new_day_index].capitalize()
+    
+    # Prepare the day/hours string
+    days_later_str = ''
+    if days_later == 1:
+        days_later_str = ' (next day)'
+    elif days_later > 1:
+        days_later_str = f' ({days_later} days later)'
+    
+    # Compose the final string
+    new_time = f"{display_hours}:{total_minutes:02d} {meridiem_result}{day_str}{days_later_str}"
+    
+    return new_time
+
+** end of main.py **
+
